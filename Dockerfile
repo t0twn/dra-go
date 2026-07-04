@@ -1,5 +1,9 @@
 # Multi-stage build for Alpine Docker
-FROM golang:1.21-alpine AS builder
+FROM --platform=$BUILDPLATFORM golang:1.21-alpine AS builder
+
+ARG TARGETOS
+ARG TARGETARCH
+ARG TARGETVARIANT
 
 RUN apk add --no-cache git ca-certificates
 
@@ -10,7 +14,9 @@ RUN go mod download
 
 COPY . .
 
-RUN CGO_ENABLED=0 GOOS=linux go build -trimpath -ldflags="-s -w" -o dra .
+# Strip 'v' prefix from TARGETVARIANT for GOARM (v6 -> 6, v7 -> 7)
+RUN GOARM_VALUE=$(echo ${TARGETVARIANT:-} | sed 's/^v//'); \
+    CGO_ENABLED=0 GOOS=${TARGETOS:-linux} GOARCH=${TARGETARCH:-amd64} GOARM=${GOARM_VALUE:-} go build -trimpath -ldflags="-s -w" -o dra .
 
 # Final stage: minimal Alpine image
 FROM alpine:3.19

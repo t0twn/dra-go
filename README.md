@@ -16,6 +16,27 @@ A Go port of [devmatteini/dra](https://github.com/devmatteini/dra), optimized fo
 
 ## Installation
 
+### Prebuilt binaries
+
+Download the prebuilt versions of `dra` for all supported platforms from
+the [latest release](https://github.com/t0twn/dra-go/releases/latest).
+
+| OS | Arch | Asset |
+|---|---|---|
+| Linux | x86_64 | `dra_*_linux_amd64.tar.gz` |
+| Linux | arm64 | `dra_*_linux_arm64.tar.gz` |
+| Linux | armv6/v7 | `dra_*_linux_arm.tar.gz` |
+| macOS | Intel | `dra_*_darwin_amd64.tar.gz` |
+| macOS | Apple Silicon | `dra_*_darwin_arm64.tar.gz` |
+
+You can use this `bash` script to automatically download the latest release across all supported platforms.
+Replace `<DESTINATION>` with the path where you want to place dra (e.g `~/.local/bin`).
+If you omit `--to` option, the default value is the current working directory.
+
+```shell
+curl --proto '=https' --tlsv1.2 -sSf https://raw.githubusercontent.com/t0twn/dra-go/refs/heads/main/install.sh | bash -s -- --to <DESTINATION>
+```
+
 ### From source
 
 ```bash

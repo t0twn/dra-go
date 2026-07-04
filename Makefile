@@ -40,10 +40,27 @@ build-macos-arm64:
 # Build all platforms
 build-all: build-linux-amd64 build-linux-arm64 build-linux-arm build-macos-amd64 build-macos-arm64
 
+
 # Docker build
 docker:
 	docker build -t dra:latest .
 
+
 # Run inside docker
 docker-run:
 	docker run --rm -it dra:latest download --automatic $(REPO)
+
+# Build and push multi-arch image to registry
+# Usage: make docker-push DOCKER_REGISTRY=docker.io/username DOCKER_TAG=latest
+.PHONY:  docker-push
+
+DOCKER_REGISTRY ?= your-registry.com/your-username
+DOCKER_IMAGE ?= dra
+DOCKER_TAG ?= latest
+
+docker-push:
+	docker buildx build --platform linux/amd64,linux/arm64,linux/arm/v6 \
+		--no-cache \
+		--tag $(DOCKER_REGISTRY)/$(DOCKER_IMAGE):$(DOCKER_TAG) \
+		--push .
+
